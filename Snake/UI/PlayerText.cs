@@ -23,7 +23,8 @@ namespace Snake
         {
             if(player != null)
             {
-                string newText = "Points:"+(player.GetPoints()+1).ToString();
+                    
+                string newText = "Points:"+(player.GetPoints()+1).ToString() +"\n"+"Pause:" + wasPaused;
                 newText = newText.Replace("Agario.", "");
                 text.DisplayedString = newText;
                 text.FillColor = Color.Red;

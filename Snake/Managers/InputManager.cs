@@ -25,7 +25,7 @@ namespace Snake
                     return Vector2.up;
             }
             
-            return Vector2.right;
+            return new Vector2f(0,0);
         }
         public static void OnKeyPressed(object sender, KeyEventArgs keyCode)
         {
@@ -39,7 +39,6 @@ namespace Snake
                 else
                     wasPaused = true;
             }
-            Console.WriteLine(wasPaused);
         }
     }
 }

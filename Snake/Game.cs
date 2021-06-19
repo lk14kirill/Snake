@@ -36,13 +36,13 @@ namespace Snake
             }
             private void DoCycle()
             {
-            
-
                 totalTimeElapsed = clock.ElapsedTime.AsSeconds();
                 deltaTime = totalTimeElapsed - previousTimeElapsed;
                 previousTimeElapsed = totalTimeElapsed;
 
+
                 totalTimeBeforeUpdate += deltaTime;
+              
 
                 if (totalTimeBeforeUpdate >= Constants.TIME_UNTIL_UPDATE)
                 {
@@ -51,11 +51,15 @@ namespace Snake
             }
             private void CycleStep()
             {
-               time = clock.ElapsedTime.AsMicroseconds();
-               clock.Restart();
-               time /= 800;
-  
-               window.Clear(Color.White);
+              time = clock.ElapsedTime.AsMicroseconds();
+              clock.Restart();
+              time /= 800;
+
+              if (InputManager.WasPaused())
+              {
+                  time = 0;
+              }
+              window.Clear(Color.White);
                window.DispatchEvents();
 
                updatableObjects.Update(InputManager.GetKeyboardInput(), 

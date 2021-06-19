@@ -17,11 +17,6 @@ namespace Snake
         }
         public void Update(Vector2f playerDirection, List<Food> food, float time, Player player, bool wasPaused)
         {
-            if (wasPaused)
-            {
-            //     Thread.Sleep(500);
-                 
-            }
         }
 
     }

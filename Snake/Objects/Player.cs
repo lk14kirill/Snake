@@ -14,7 +14,7 @@ namespace Snake
         {
             SetRandomColor();
             SetRandomPosition(new Vector2f(Constants.windowX, Constants.windowY));
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < 999; i++)
             {
                 IncreaseTail();
             }
@@ -24,11 +24,12 @@ namespace Snake
             MoveToward(playerDirection, time);
             TryEatFood(food);
             MoveTail();
-            if(tail.Count >=15)
-            Intersect();
+            //if(tail.Count >=15)
+            //Intersect(wasPaused);
         }
-        private void Intersect()
+        private void Intersect(bool wasPaused)
         {
+            if(!wasPaused)
             for (int i = 7; i < tail.Count; i++)
             {
                 if(MathExt.CheckForIntersect(this, tail[i]))
