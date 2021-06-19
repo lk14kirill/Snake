@@ -18,9 +18,9 @@ namespace Snake
             }
         }
 
-        private List<IUpdatable> objectsToRemove = new List<IUpdatable>();
+        private List<CircleObject> objectsToRemove = new List<CircleObject>();
         private List<CircleObject> objectsToRegister = new List<CircleObject>();
-        public void AddToObjectsToRemove(IUpdatable updatable) => objectsToRemove.Add(updatable);
+        public void AddToObjectsToRemove(CircleObject updatable) => objectsToRemove.Add(updatable);
         public void AddToObjectsToRegister(CircleObject circle) => objectsToRegister.Add(circle);
         public void RegisterCachedObjects(UpdatableObjects updatableObjects, DrawableObjects drawable)
         {
@@ -31,16 +31,20 @@ namespace Snake
         }
         public void RemoveCachedObjectsAndCreateNew(UpdatableObjects updatableObjects, DrawableObjects drawable)
         {
-            foreach (IUpdatable updatable in objectsToRemove)
+            
+            foreach (CircleObject circle in objectsToRemove)
             {
-                UnregisterObject(updatableObjects, drawable, updatable);
-                if (updatable is Player)
+                if (circle is IUpdatable)
+                    UnregisterObject(updatableObjects, drawable, circle as IUpdatable);
+                if (circle is IDrawable)
+                    UnregisterDrawableObject(updatableObjects, drawable, circle as IDrawable);
+                if (circle is Player)
                     CreatePlayer(updatableObjects, drawable);
-                if (updatable is Food)
+                if (circle is Food)
                     RegisterObject(updatableObjects, drawable, new Food());
             }
 
-            objectsToRemove = new List<IUpdatable>();
+            objectsToRemove = new List<CircleObject>();
         }
 
         public  void CreatePlayer(UpdatableObjects updatableObjects, DrawableObjects drawableObjects)

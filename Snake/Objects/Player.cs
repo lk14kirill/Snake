@@ -9,23 +9,39 @@ namespace Snake
     public class Player : CircleObject,IUpdatable
     {
         private List<CircleObject> tail = new List<CircleObject>();
-        private float speedModifier = 1;
+        public int GetPoints() => tail.Count;
         public Player()
         {
             SetRandomColor();
             SetRandomPosition(new Vector2f(Constants.windowX, Constants.windowY));
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 9; i++)
             {
-                Eat();
+                IncreaseTail();
             }
         }
-        public void Update(Vector2f playerDirection,List<Food> food,float time,Player player)
+        public void Update(Vector2f playerDirection,List<Food> food,float time,Player player, bool wasPaused)
         {   
             MoveToward(playerDirection, time);
             TryEatFood(food);
             MoveTail();
+            if(tail.Count >=15)
+            Intersect();
         }
-
+        private void Intersect()
+        {
+            for (int i = 7; i < tail.Count; i++)
+            {
+                if(MathExt.CheckForIntersect(this, tail[i]))
+                {
+                    Fabric.Instance.AddToObjectsToRemove(this);
+                    foreach(CircleObject circle in tail)
+                    {
+                     Fabric.Instance.AddToObjectsToRemove(circle);
+                    }
+                    break;
+                }
+            }
+        }
         public  void TryEatFood(List<Food> foodList)
         {
             foreach (Food food in foodList)
@@ -33,14 +49,11 @@ namespace Snake
                 if (MathExt.CheckForIntersect(this, food))
                 {
                     Fabric.Instance.AddToObjectsToRemove(food);
-                    if (GetRadius() < 400)
-                        Eat();
+                        IncreaseTail();
                     return;
                 }
             }
         }
-        private int count = -1;
-        Vector2f tempPos; Vector2f cachedPos;
         public void  MoveTail()
         {
             Vector2f tempPos; Vector2f cachedPos;
@@ -52,7 +65,7 @@ namespace Snake
                 cachedPos = tempPos;
             }
         }
-        public void Eat()
+        public void IncreaseTail()
         {
             tail.Add(InitNewPartOfTail());
         }

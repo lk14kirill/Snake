@@ -43,11 +43,11 @@ namespace Snake
         {
             updatableObjects.Remove(updatable);
         }
-        public void Update(Vector2f direction, List<Food> food, float time,Player player)
+        public void Update(Vector2f direction, List<Food> food, float time,Player player,bool wasPaused)
         {
             foreach (IUpdatable updatable in updatableObjects)
             {
-                updatable.Update(direction, food, time,player);
+                updatable.Update(direction, food, time,player,wasPaused);
             }
         }
     }

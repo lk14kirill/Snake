@@ -2,6 +2,7 @@
 using SFML.System;
 using SFML.Graphics;
 using SFML.Window;
+using System.Threading;
 
 namespace Snake
 {
@@ -13,86 +14,87 @@ namespace Snake
             private float deltaTime = 0f;
             private float totalTimeElapsed = 0f;
 
+            private ThreadManager threadManager = new ThreadManager();
             private DrawableObjects drawableObjects = new DrawableObjects();
             private UpdatableObjects updatableObjects = new UpdatableObjects();
             private Clock clock = new Clock();
-            private Controller controller = new Controller();
             private RenderWindow window = new RenderWindow(new VideoMode(Constants.windowX, Constants.windowY), "Game window");
 
-            private Vector2f direction;
             public void GameCycle()
             {
                 Init();
-                while (window.IsOpen /*&& !updatableObjects.GetPlayer().IsEaten()*/)
+                while (window.IsOpen)
                 {
-                 DoCycleStep();
+                  DoCycle();
                 }
             }
             private void Init()
             {
                 WindowSetup();
                 CreateObjects();
-                PlayerText text = new PlayerText();
-                Fabric.Instance.RegisterObject(updatableObjects,drawableObjects,text);
-                text.Initialize(updatableObjects.GetPlayer().GetGO().OutlineColor);
+                
             }
-            private void DoCycleStep()
+            private void DoCycle()
             {
+            
 
-           
                 totalTimeElapsed = clock.ElapsedTime.AsSeconds();
                 deltaTime = totalTimeElapsed - previousTimeElapsed;
                 previousTimeElapsed = totalTimeElapsed;
 
                 totalTimeBeforeUpdate += deltaTime;
-               if(totalTimeBeforeUpdate >= Constants.TIME_UNTIL_UPDATE)
-               {
-                 time = clock.ElapsedTime.AsMicroseconds();
-                 clock.Restart();
-                 time /= 800;                                              
 
-                 window.Clear(Color.White);
-                 window.DispatchEvents();
+                if (totalTimeBeforeUpdate >= Constants.TIME_UNTIL_UPDATE)
+                {
+                    CycleStep();
+                }
+            }
+            private void CycleStep()
+            {
+               time = clock.ElapsedTime.AsMicroseconds();
+               clock.Restart();
+               time /= 800;
+  
+               window.Clear(Color.White);
+               window.DispatchEvents();
 
-                 updatableObjects.Update(InputManager.GetKeyboardInput(), updatableObjects.GetFood(), (float)time,updatableObjects.GetPlayer());
+               updatableObjects.Update(InputManager.GetKeyboardInput(), 
+                                       updatableObjects.GetFood(), 
+                                      (float)time, 
+                                       updatableObjects.GetPlayer(),
+                                       InputManager.WasPaused());
+               Fabric.Instance.RemoveCachedObjectsAndCreateNew(updatableObjects, drawableObjects);
+               Fabric.Instance.RegisterCachedObjects(updatableObjects, drawableObjects);
 
-                 Fabric.Instance.RemoveCachedObjectsAndCreateNew(updatableObjects, drawableObjects);
-                Fabric.Instance.RegisterCachedObjects(updatableObjects, drawableObjects);
-
-                 drawableObjects.Draw(window);
-                 window.Display();
-               }
-              
+               drawableObjects.Draw(window);
+               window.Display();
             }
 
             private void CreateObjects()
             {
+               PlayerText text = new PlayerText();
                Fabric.Instance.CreateFood(updatableObjects, drawableObjects, 1);
                Fabric.Instance.CreatePlayer(updatableObjects,drawableObjects);
+               Fabric.Instance.RegisterObject(updatableObjects, drawableObjects, text);
+               text.Initialize(updatableObjects.GetPlayer().GetGO().OutlineColor);
+               Fabric.Instance.RegisterObject(updatableObjects, drawableObjects, threadManager);
             }
             private void WindowSetup()
             {
-                window.MouseMoved += OnMouseMoved;
                 window.Closed += WindowClosed;
                 window.KeyPressed += InputManager.OnKeyPressed;
             }
             private void WindowUnsubscribe()
             {
-                 window.MouseMoved -= OnMouseMoved;
                  window.Closed -= WindowClosed;
                  window.KeyPressed -= InputManager.OnKeyPressed;
-        }
-            public void OnMouseMoved(object sender, MouseMoveEventArgs e)
-            {
-                direction = new Vector2f(e.X, e.Y);
             }
             private void WindowClosed(object sender, EventArgs e)
             {
                 RenderWindow w = (RenderWindow)sender;
                 WindowUnsubscribe();
                 w.Close();
-            }
-
-         
+            }    
     }
+
 }

@@ -5,6 +5,6 @@ namespace Snake
 {
     public interface IUpdatable
     {
-        void Update(Vector2f playerDirection, List<Food> food, float time,Player player);
+        void Update(Vector2f playerDirection, List<Food> food, float time,Player player,bool wasPaused);
     }
 }

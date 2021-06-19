@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Snake
 {
-    public class Food : CircleObject,IUpdatable,IDrawable
+    public class Food : CircleObject,IDrawable,IUpdatable
     {
         public Food()
         {
@@ -13,13 +13,9 @@ namespace Snake
             SetRandomColor();
             SetRadius(5);
         }
-        public void Update(Vector2f direction,List<Food> food,float time,Player player)
+        public void Update(Vector2f playerDirection, List<Food> food, float time, Player player,bool wasPaused)
         {
 
-        }
-        public Drawable WhatToDraw()
-        {
-           return GetGO();
         }
     }
 }

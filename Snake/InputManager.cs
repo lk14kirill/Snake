@@ -9,6 +9,8 @@ namespace Snake
     public class InputManager
     {
         private static Keyboard.Key key;
+        private static bool wasPaused;
+        public static bool WasPaused() => wasPaused;
         public static Vector2f GetKeyboardInput()
         {
             switch (key)
@@ -22,13 +24,22 @@ namespace Snake
                 case Keyboard.Key.W:
                     return Vector2.up;
             }
+            
             return Vector2.right;
         }
         public static void OnKeyPressed(object sender, KeyEventArgs keyCode)
         {
             if (keyCode != null)
               key = keyCode.Code;
-              
+
+            if (key == Keyboard.Key.Escape)
+            {
+                if (wasPaused)
+                    wasPaused = false;
+                else
+                    wasPaused = true;
+            }
+            Console.WriteLine(wasPaused);
         }
     }
 }
