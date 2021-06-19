@@ -4,12 +4,20 @@ using System;
 
 namespace Snake
 {
-    public class CircleObject
+    public class CircleObject :IDrawable
     {
+        public Drawable WhatToDraw()
+        {
+            return GetGO();
+        }
         private bool canMove = true;
-        private float speed = 1;
+        private float speed = 0.2f;
         public CircleShape gameObject = new CircleShape();
-
+        public CircleObject()
+        {
+            SetRadius(5);
+        }
+        public Color GetColor() => gameObject.FillColor;
         public void SetBoolCanMove(bool a) => canMove = a;
         public bool GetCanMove() => canMove;
         public void SetPosition(Vector2f vector)
@@ -18,6 +26,7 @@ namespace Snake
                 gameObject.Position = new Vector2f(vector.X - GetRadius(), vector.Y - GetRadius());
         }
         public Vector2f GetPosition() => new Vector2f(gameObject.Position.X, gameObject.Position.Y);
+        public void SetCenter(Vector2f vector) => gameObject.Position = new Vector2f(vector.X - GetRadius(), vector.Y-GetRadius());
         public Vector2f GetCenter() => new Vector2f(gameObject.Position.X + gameObject.Radius, gameObject.Position.Y + gameObject.Radius);
         public void SetRadius(float radius) => gameObject.Radius = radius;
         public float GetRadius() => gameObject.Radius;
@@ -40,13 +49,9 @@ namespace Snake
         {
             if (direction != new Vector2f(0, 0) && GetCanMove())
             {
-                float distance = MathExt.VectorLength(direction, GetCenter());
-                if (distance >2)
-                {
-                    Vector2f directionTemp = new Vector2f(speed * time * (direction.X - GetCenter().X) / distance,
-                                      speed * time * (direction.Y - GetCenter().Y) / distance);
+                    Vector2f directionTemp = new Vector2f(speed * time * direction.X ,
+                                      speed * time * direction.Y );
                     gameObject.Position += directionTemp;
-                }
             }
         }
     }

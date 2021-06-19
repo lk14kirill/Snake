@@ -7,23 +7,7 @@ namespace Snake
     {
         public List<IUpdatable> updatableObjects = new List<IUpdatable>();
          public List<IUpdatable> GetList() => updatableObjects;
-        public List<Player> GetBots()
-        {
-            List<Player> bots = new List<Player>();
-            foreach (IUpdatable updatable in updatableObjects)
-            {
-                if(updatable is Player)
-                {
-                    Player player = (Player)updatable;
-                    if (!player.IsPlayer())
-                    {
-                        bots.Add(player);
-                    }
-                }
-                
-            }
-            return bots;
-        }
+    
         public List<Food> GetFood()
         {
             List<Food> foodList = new List<Food>();
@@ -46,10 +30,7 @@ namespace Snake
                 if (pl is Player)
                 {
                     Player tempPlayer = pl as Player;
-                    if (tempPlayer.IsPlayer())
-                    {
                       player = tempPlayer;
-                    }
                 }
             }
             return player;
@@ -62,11 +43,11 @@ namespace Snake
         {
             updatableObjects.Remove(updatable);
         }
-        public void Update(Vector2f direction, List<Food> food, List<Player> bots, float time,Player player)
+        public void Update(Vector2f direction, List<Food> food, float time,Player player)
         {
             foreach (IUpdatable updatable in updatableObjects)
             {
-                updatable.Update(direction, bots, food, time,player);
+                updatable.Update(direction, food, time,player);
             }
         }
     }

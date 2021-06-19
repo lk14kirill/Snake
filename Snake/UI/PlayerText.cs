@@ -19,11 +19,11 @@ namespace Snake
             text.Font = font;
             text.DisplayedString = "10";
         }
-        public void Update(Vector2f direction,List<Player> players,List<Food> food,float time,Player player)
+        public void Update(Vector2f direction,List<Food> food,float time,Player player)
         {
             if(player != null)
             {
-                string newText = "Fraction-" +player.GetFraction().ToString() + "\n"+Math.Round(player.GetRadius()).ToString();
+                string newText = "Fraction-" + "\n"+Math.Round(player.GetRadius()).ToString();
                 newText = newText.Replace("Agario.", "");
                 text.DisplayedString = newText;
                 text.FillColor = player.GetGO().OutlineColor;

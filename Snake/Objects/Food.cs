@@ -9,11 +9,11 @@ namespace Snake
     {
         public Food()
         {
-            SetRandomPosition(new Vector2f(Constants.windowX,Constants.windowY));
+            SetRandomPosition(new Vector2f(Constants.windowX -10,Constants.windowY -10 ));
             SetRandomColor();
             SetRadius(5);
         }
-        public void Update(Vector2f direction,List<Player> players,List<Food> food,float time,Player player)
+        public void Update(Vector2f direction,List<Food> food,float time,Player player)
         {
 
         }

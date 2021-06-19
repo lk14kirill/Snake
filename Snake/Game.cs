@@ -54,38 +54,34 @@ namespace Snake
                  window.Clear(Color.White);
                  window.DispatchEvents();
 
-                 updatableObjects.Update(direction, updatableObjects.GetFood(), updatableObjects.GetBots(), (float)time,updatableObjects.GetPlayer());
+                 updatableObjects.Update(InputManager.GetKeyboardInput(), updatableObjects.GetFood(), (float)time,updatableObjects.GetPlayer());
 
                  Fabric.Instance.RemoveCachedObjectsAndCreateNew(updatableObjects, drawableObjects);
+                Fabric.Instance.RegisterCachedObjects(updatableObjects, drawableObjects);
 
                  drawableObjects.Draw(window);
                  window.Display();
                }
               
             }
-            private void OnKeyChangePlayer(object sender, KeyEventArgs e)
-            {
-                if (e.Code == Keyboard.Key.F)
-                    controller.ChangePlayerAndReplaceBots(updatableObjects);
-            }
+
             private void CreateObjects()
             {
-               Fabric.Instance.CreateFood(updatableObjects, drawableObjects, 150);
-               Fabric.Instance.CreatePlayer(updatableObjects,drawableObjects,true);
-               Fabric.Instance.CreatePlayers(updatableObjects,drawableObjects,false,4);
+               Fabric.Instance.CreateFood(updatableObjects, drawableObjects, 1);
+               Fabric.Instance.CreatePlayer(updatableObjects,drawableObjects);
             }
             private void WindowSetup()
             {
                 window.MouseMoved += OnMouseMoved;
                 window.Closed += WindowClosed;
-                window.KeyPressed += OnKeyChangePlayer;
+                window.KeyPressed += InputManager.OnKeyPressed;
             }
             private void WindowUnsubscribe()
             {
                  window.MouseMoved -= OnMouseMoved;
                  window.Closed -= WindowClosed;
-                 window.KeyPressed -= OnKeyChangePlayer;
-            }
+                 window.KeyPressed -= InputManager.OnKeyPressed;
+        }
             public void OnMouseMoved(object sender, MouseMoveEventArgs e)
             {
                 direction = new Vector2f(e.X, e.Y);
@@ -96,6 +92,7 @@ namespace Snake
                 WindowUnsubscribe();
                 w.Close();
             }
-        
+
+         
     }
 }

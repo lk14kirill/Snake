@@ -1,0 +1,34 @@
+﻿using System;
+using SFML;
+using SFML.System;
+using SFML.Graphics;
+using SFML.Window;
+
+namespace Snake
+{
+    public class InputManager
+    {
+        private static Keyboard.Key key;
+        public static Vector2f GetKeyboardInput()
+        {
+            switch (key)
+            {
+                case Keyboard.Key.A:
+                    return Vector2.left;
+                case Keyboard.Key.S:
+                    return Vector2.down;
+                case Keyboard.Key.D:
+                    return Vector2.right;
+                case Keyboard.Key.W:
+                    return Vector2.up;
+            }
+            return Vector2.right;
+        }
+        public static void OnKeyPressed(object sender, KeyEventArgs keyCode)
+        {
+            if (keyCode != null)
+              key = keyCode.Code;
+              
+        }
+    }
+}

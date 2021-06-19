@@ -2,85 +2,77 @@
 using SFML.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Snake
 {
-    public class Player : CircleObject,IUpdatable,IDrawable
+    public class Player : CircleObject,IUpdatable
     {
-        private bool isEaten;
+        private List<CircleObject> tail = new List<CircleObject>();
         private float speedModifier = 1;
-        private float weightModifier = 0.000025f;
-        private Fraction fraction;
-        private bool isPlayer = false;
         public Player()
         {
-            gameObject.Radius = 10;
             SetRandomColor();
-            gameObject.OutlineThickness =3;
-            fraction = RandomFraction();
             SetRandomPosition(new Vector2f(Constants.windowX, Constants.windowY));
-        } 
-        public bool IsPlayer() => isPlayer;
-        public void SetIsPlayer(bool s) => isPlayer = s;
-        public Fraction GetFraction() => fraction;
-        public bool IsEaten() => isEaten;
-        public void SetIsEaten(bool s) => isEaten = s;
-        private Fraction RandomFraction()
-        {
-            Random rand = new Random();
-            switch (rand.Next(1, 4))
+            for (int i = 0; i < 10; i++)
             {
-                case 1:
-                    return new Omnivore();
-                case 2:
-                    return new Herbivore();
-                case 3:
-                    return new Predator();
+                Eat();
             }
-            return new Omnivore();
+        }
+        public void Update(Vector2f playerDirection,List<Food> food,float time,Player player)
+        {   
+            MoveToward(playerDirection, time);
+            TryEatFood(food);
+            MoveTail();
         }
 
-        public void LoseWeightAndChangeSpeed()
+        public  void TryEatFood(List<Food> foodList)
         {
-            if (GetRadius() > 10 && weightModifier != 0)
+            foreach (Food food in foodList)
             {
-                SetRadius(GetRadius() - GetRadius() * 0.00023f * weightModifier);
+                if (MathExt.CheckForIntersect(this, food))
+                {
+                    Fabric.Instance.AddToObjectsToRemove(food);
+                    if (GetRadius() < 400)
+                        Eat();
+                    return;
+                }
             }
-            SetSpeed(8 / (GetRadius() * 1.2f) * speedModifier);
         }
-        public void Update(Vector2f playerDirection,List<Player> bots,List<Food> food,float time,Player player)
+        private int count = -1;
+        Vector2f tempPos; Vector2f cachedPos;
+        public void  MoveTail()
         {
-            if (IsPlayer())
-                MoveToward(playerDirection, time);
+            Vector2f tempPos; Vector2f cachedPos;
+            cachedPos = GetCenter();
+            foreach (CircleObject circle in tail)
+            {
+                tempPos = circle.GetCenter();
+                circle.SetCenter(cachedPos);
+                cachedPos = tempPos;
+            }
+        }
+        public void Eat()
+        {
+            tail.Add(InitNewPartOfTail());
+        }
+        public CircleObject InitNewPartOfTail()
+        {
+            CircleObject circle = new CircleObject();
+            
+            Fabric.Instance.AddToObjectsToRegister(circle);
+            if (tail.Count >1)
+            {
+                circle.SetCenter(tail[tail.Count-1].GetPosition());
+                circle.gameObject.FillColor = tail[0].GetColor();
+            }
             else
-                MoveToFood(food,time,bots);
-            Intersect(bots);
-            LoseWeightAndChangeSpeed();
-            TryEatFood(food);
-        }
-        public Drawable WhatToDraw()
-        {
-            return GetGO();
-        }
-        public void Intersect(List<Player> bots)
-        {
-            fraction.Intersect(this,bots);
-        }
-      
-        public void Init()
-        {
-            fraction.Init(this);
-            speedModifier = fraction.GetSpeedModifier();
-            weightModifier = fraction.GetWeightModifier();
-        }
-        public void TryEatFood(List<Food> foodlist)
-        {
-            fraction.TryEatFood(this, foodlist);
-        }
-        public void MoveToFood(List<Food> foodlist, float time, List<Player> bots)
-        {
-            if(!IsPlayer())
-            fraction.MoveToFood(this, foodlist, time, bots);
+            {
+                circle.SetCenter(GetCenter());
+                circle.gameObject.FillColor = GetColor();
+                SetRandomColor();
+            }
+            return circle;
         }
     }
 }
