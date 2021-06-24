@@ -4,19 +4,12 @@ using System.Threading;
 
 namespace Snake
 {
-    class ThreadManager : IUpdatable
+    class ThreadManager 
     {
-        private bool isSleeping;
-        public bool IsSleeping
+        public void InitAnimationThread(Player player)
         {
-            set
-            {
-                isSleeping = value;
-            }
-            get { return isSleeping; }
-        }
-        public void Update(Vector2f playerDirection, List<Food> food, float time, Player player, bool wasPaused)
-        {
+            Thread animThread = new Thread(new ThreadStart(player.Animation));
+            animThread.Start();
         }
 
     }

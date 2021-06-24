@@ -12,13 +12,30 @@ namespace Snake
         public int GetPoints() => tail.Count;
         public Player()
         {
-            SetRandomColor();
             SetRandomPosition(new Vector2f(Constants.windowX, Constants.windowY));
-            for (int i = 0; i < 999; i++)
+            for (int i = 0; i < 39; i++)
             {
                 IncreaseTail();
             }
         }
+      
+        public void Animation()
+        {
+            Clock clock = new Clock();
+            while (true)
+            {
+                if (clock.ElapsedTime.AsSeconds() > 0.01f)
+                {
+                    clock.Restart();
+                    ChangeColor();
+                    foreach (CircleObject circle in tail)
+                    {
+                        circle.ChangeColor();
+                    }
+                }
+            }
+        }
+
         public void Update(Vector2f playerDirection,List<Food> food,float time,Player player, bool wasPaused)
         {   
             MoveToward(playerDirection, time);
@@ -57,6 +74,7 @@ namespace Snake
         }
         public void  MoveTail()
         {
+
             Vector2f tempPos; Vector2f cachedPos;
             cachedPos = GetCenter();
             foreach (CircleObject circle in tail)
@@ -78,7 +96,10 @@ namespace Snake
             if (tail.Count >1)
             {
                 circle.SetCenter(tail[tail.Count-1].GetPosition());
-                circle.gameObject.FillColor = tail[0].GetColor();
+                Color color = tail[0].GetColor();
+                circle.colorB = color.B;
+                circle.colorG = color.G;
+                circle.colorR = color.R;
             }
             else
             {

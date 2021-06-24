@@ -6,18 +6,67 @@ namespace Snake
 {
     public class CircleObject :IDrawable
     {
-        public Drawable WhatToDraw()
+        private byte r = 255, g, b;
+        public byte colorR
         {
-            return GetGO();
+            get { return r; }
+            set {
+                gameObject.FillColor = new Color(value, g, b);
+                r = value; 
+                }
         }
+        public byte colorG
+        {
+            get { return g; }
+            set
+            {
+                gameObject.FillColor = new Color(r, value, b);
+                g = value;
+            }
+        }
+        public byte colorB
+        {
+            get { return b; }
+            set
+            {
+                gameObject.FillColor = new Color(r, g, value);
+                b = value;
+            }
+        }
+
+
         private bool canMove = true;
         private float speed = 0.2f;
         public CircleShape gameObject = new CircleShape();
         public CircleObject()
         {
             SetRadius(5);
+            gameObject.FillColor = new Color(254, 0, 0);
         }
+        public void ChangeColor()
+        {
+            if (colorR > 0 && colorB == 0)
+            {
+                colorR -= 1;
+                colorG += 1;
+            }
+            if (colorG > 0 && colorR == 0)
+            {
+                colorG -= 1;
+                colorB += 1;
+            }
+            if (colorB > 0 && colorG == 0)
+            {
+                colorB -= 1;
+                colorR += 1;
+            }
+        }
+        public void SetColor(Color color) => gameObject.FillColor = color;
         public Color GetColor() => gameObject.FillColor;
+        public Drawable WhatToDraw()
+        {
+            return GetGO();
+        }
         public void SetBoolCanMove(bool a) => canMove = a;
         public bool GetCanMove() => canMove;
         public void SetPosition(Vector2f vector)

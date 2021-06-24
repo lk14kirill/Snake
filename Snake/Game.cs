@@ -32,7 +32,7 @@ namespace Snake
             {
                 WindowSetup();
                 CreateObjects();
-                
+            threadManager.InitAnimationThread(updatableObjects.GetPlayer());
             }
             private void DoCycle()
             {
@@ -81,7 +81,6 @@ namespace Snake
                Fabric.Instance.CreatePlayer(updatableObjects,drawableObjects);
                Fabric.Instance.RegisterObject(updatableObjects, drawableObjects, text);
                text.Initialize(updatableObjects.GetPlayer().GetGO().OutlineColor);
-               Fabric.Instance.RegisterObject(updatableObjects, drawableObjects, threadManager);
             }
             private void WindowSetup()
             {
